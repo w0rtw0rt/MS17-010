@@ -44,6 +44,7 @@ Anonymous user (null session) get more restriction on default settings of new Wi
 ## Instructions to perform exploit
 
 **Step 1:** `git clone https://github.com/w0rtw0rt/MS17-010.git && cd MS17-010/`
+
 **Step 1a:** gedit/vi/nano eternalblue_exploit8.py and change lines 52 and 53 to match the account authentication
 example:
 USERNAME='Guest'
